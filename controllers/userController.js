@@ -1,29 +1,25 @@
-const { User } = require('../models');
+const { User, Question } = require('../models');
 const bcrypt = require('bcryptjs');
-const { v4: uuidv4 } = require('uuid');
 
+// Create a new user
 const createUser = async (req, res) => {
   const { name, email, password } = req.body;
   try {
-    const hashedPassword = bcrypt.hashSync(password, 8);  // Ensure bcrypt hashing is done here
-    const user = await User.create({
-      userId: uuidv4(),
-      name,
-      email,
-      password: hashedPassword,
-    });
-    res.status(201).json(user);
+    const hashedPassword = bcrypt.hashSync(password, 8);
+    const newUser = await User.create({ name, email, password: hashedPassword });
+    res.status(201).json(newUser);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
+// Retrieve a user profile by userId
 const getUser = async (req, res) => {
   const { userId } = req.params;
   try {
     const user = await User.findByPk(userId);
     if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
+      return res.status(404).json({ message: 'User not found' });
     }
     res.json(user);
   } catch (error) {
@@ -31,19 +27,19 @@ const getUser = async (req, res) => {
   }
 };
 
+// Retrieve all questions asked by a user with a given userId
 const getUserQuestions = async (req, res) => {
   const { userId } = req.params;
   try {
-    const user = await User.findByPk(userId, {
-      include: 'Questions'
-    });
-    if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
-    }
-    res.json(user.Questions);
+    const questions = await Question.findAll({ where: { userId } });
+    res.json(questions);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-module.exports = { createUser, getUser, getUserQuestions };
+module.exports = {
+  createUser,
+  getUser,
+  getUserQuestions,
+};
