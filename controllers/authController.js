@@ -4,6 +4,10 @@ const { User } = require('../models');
 
 const secret = 'dc0590174eb704ee69bbf537d8af359f394aa1e44ff3dd095087a9e4ce2978e32272388f7b5022d6da68851ced5722f735880efaaecb560f222a41f80f907194';
 
+const createToken = (user) => {
+  return jwt.sign({ userId: user.userId }, secret, { expiresIn: '1h' });
+};
+
 const login = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -12,11 +16,11 @@ const login = async (req, res) => {
       return res.status(400).json({ message: 'Invalid user.' });
     }
     const passwordMatch = bcrypt.compareSync(password, user.password);
-    console.log(user.password, passwordMatch, "password", password);
+    console.log(user.password, passwordMatch, "password", password, "hii");
     if (!passwordMatch) {
       return res.status(400).json({ message: 'Password not matched.' });
     }
-    const token = jwt.sign({ userId: user.userId }, secret, { expiresIn: '1h' });
+    const token = createToken(user);
     res.json({ token });
   } catch (error) {
     console.error('Error during login:', error);
@@ -40,9 +44,10 @@ const refresh = (req, res) => {
 };
 
 const authenticate = (req, res, next) => {
-  const token = req.headers['authorization'];
-  if (!token) return res.status(401).json({ message: 'No token provided' });
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) return res.status(401).json({ message: 'No token provided' });
 
+  const token = authHeader.split(' ')[1]; // Extract token from 'Bearer <token>'
   jwt.verify(token, secret, (err, decoded) => {
     if (err) return res.status(401).json({ message: 'Failed to authenticate token' });
 

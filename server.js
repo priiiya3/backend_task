@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/questions', authenticate, questionsRoutes);
-app.use('/api/users', authenticate, usersRoutes);
+app.use('/api/users', usersRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
