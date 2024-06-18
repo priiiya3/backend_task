@@ -159,7 +159,7 @@
 
             const response = await fetch(`${apiBaseUrl}/questions/${questionId}`, {
                 headers: {
-                    'Authorization': token,
+                    'Authorization': `Bearer ${token}`,
                 },
             });
             const result = await response.json();
@@ -172,7 +172,7 @@
 
             const response = await fetch(`${apiBaseUrl}/users/${userId}`, {
                 headers: {
-                    'Authorization': token,
+                    'Authorization': `Bearer ${token}`,
                 },
             });
             const result = await response.json();
@@ -185,7 +185,7 @@
 
             const response = await fetch(`${apiBaseUrl}/users/${userQuestionsId}/questions`, {
                 headers: {
-                    'Authorization': token,
+                    'Authorization': `Bearer ${token}`,
                 },
             });
             const result = await response.json();
@@ -196,7 +196,7 @@
             const response = await fetch(`${apiBaseUrl}/auth/logout`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': token,
+                    'Authorization': `Bearer ${token}`,
                 },
             });
             const result = await response.json();

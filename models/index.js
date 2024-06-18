@@ -1,17 +1,25 @@
 const sequelize = require('../db/connection');
 const Sequelize = require('sequelize');
 
-const db = {};
 
 // Define models and their associations here
-db.User = require('./user')(sequelize, Sequelize);
-db.Question = require('./question')(sequelize, Sequelize);
+User = require('./user')(sequelize, Sequelize.DataTypes);
+Question = require('./question')(sequelize, Sequelize.DataTypes);
 
-// Define associations if any
-// db.User.hasMany(db.Question);
-// db.Question.belongsTo(db.User);
+const db = {
+    User,
+    Question,
+    sequelize,
+    Sequelize
+  };
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+  Object.keys(db).forEach(modelName => {
+    if (db[modelName].associate) {
+      db[modelName].associate(db);
+    }
+  });
+
+// db.sequelize = sequelize;
+// db.Sequelize = Sequelize;
 
 module.exports = db;
