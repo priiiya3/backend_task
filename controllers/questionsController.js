@@ -2,9 +2,9 @@ const { Question } = require('../models');
 
 // Create a new question
 const createQuestion = async (req, res) => {
-  const { userId, question } = req.body;
+  const { question } = req.body;
   try {
-    const newQuestion = await Question.create({ userId, question, answer: 'AI-generated answer' });
+    const newQuestion = await Question.create({ userId: req.userId, question, answer: 'AI-generated answer' });
     res.status(201).json(newQuestion);
   } catch (error) {
     res.status(500).json({ error: error.message });
